@@ -89,18 +89,25 @@ def depthFirstSearch(problem: SearchProblem):
     "*** YOUR CODE HERE ***"
 
     frontier = util.Stack()
-    frontier.push(problem.getStartState())
-
+    frontier.push([problem.getStartState(), [Directions.STOP]])
     explored = set()
 
     while frontier:
-        x, y = frontier.pop()
+        (x, y), actions = frontier.pop()
         if problem.isGoalState((x,y)):
-            # return list of actions (check algorithm)
+            actions.pop(0)
+            return actions
+            # return list of actions without initial direction
+        
+        for ((i,j), action, stepCost) in problem.getSuccessors((x,y)):
+            if (i,j) not in explored:
+                frontier.push([(i,j), actions.append(action)])
         
         #note that each state pushed to frontier must also have with it the action pushed
         # e.g. frontier.push([[1,2], "North"])
 
+    return -1
+    #note: getSuccessors returns triplet successor, action, stepcost
     # note: after func implemented, comment out util.raisenotdef
     # util.raiseNotDefined()
 
