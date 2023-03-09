@@ -88,9 +88,21 @@ def depthFirstSearch(problem: SearchProblem):
     """
     "*** YOUR CODE HERE ***"
 
-    
+    frontier = util.Stack()
+    frontier.push(problem.getStartState())
 
-    util.raiseNotDefined()
+    explored = set()
+
+    while frontier:
+        x, y = frontier.pop()
+        if problem.isGoalState((x,y)):
+            # return list of actions (check algorithm)
+        
+        #note that each state pushed to frontier must also have with it the action pushed
+        # e.g. frontier.push([[1,2], "North"])
+
+    # note: after func implemented, comment out util.raisenotdef
+    # util.raiseNotDefined()
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""

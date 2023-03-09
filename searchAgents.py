@@ -299,13 +299,21 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+
+        return (self.startingPosition, [0,0,0]) # none of the corners visited
+        # for corners problem, any state specifies the current location AND how many corners visited
+        # therefore, first item in triplet returned by getSuccessors is both location and corners visited
+
+        #util.raiseNotDefined()
 
     def isGoalState(self, state: Any):
         """
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+
+        return (self.startingPosition, [1,1,1])
+
         util.raiseNotDefined()
 
     def getSuccessors(self, state: Any):
@@ -364,6 +372,12 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
+
+    #heuristic should be max of 3 manhattan distances to corners, or sum of distances
+    #or can use mazeDistance() function
+    # the one to use is the largest one, check performance (least nodes visited)
+    #note that depending on how many corners visited, then we calculate heurisitic for remaining corners
+
     return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
