@@ -292,6 +292,8 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
+        self.cornerList = []
+        self.startState = (self.startingPosition, self.cornerList)
         
     def getStartState(self):
         """
@@ -299,8 +301,8 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-
-        return (self.startingPosition, [0,0,0]) # none of the corners visited
+        return self.startState
+        #return (self.startingPosition, [0,0,0]) # none of the corners visited
         # for corners problem, any state specifies the current location AND how many corners visited
         # therefore, first item in triplet returned by getSuccessors is both location and corners visited
 
@@ -311,10 +313,19 @@ class CornersProblem(search.SearchProblem):
         Returns whether this search state is a goal state of the problem.
         """
         "*** YOUR CODE HERE ***"
+        node = state[0]
+        visitedCorners = state[1]
+        
+        if node in self.corners:
+            if node not in visitedCorners:
+                visitedCorners.append(node)
+                print(visitedCorners)
+            return len(visitedCorners) == 4
+        return False
 
-        return (self.startingPosition, [1,1,1])
+        #return (self.startingPosition, [1,1,1])
 
-        util.raiseNotDefined()
+        #util.raiseNotDefined()
 
     def getSuccessors(self, state: Any):
         """
@@ -326,7 +337,7 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-
+        i = True
         successors = []
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
@@ -337,6 +348,21 @@ class CornersProblem(search.SearchProblem):
             #   hitsWall = self.walls[nextx][nexty]
 
             "*** YOUR CODE HERE ***"
+            x,y = state[0] #The passed state
+            visitedCorners = state[1] #The visited states        
+            dx, dy = Actions.directionToVector(action) #X and Y coordinates of the Action
+            nextx = int(x + dx) #Add the coordinates to get the new one
+            nexty = int(y + dy)
+            hitsWall = self.walls[nextx][nexty] #If the coordinates hit a wall, save it in self.walls
+            if not hitsWall:
+                next_state = (nextx, nexty) 
+                successVisitedCorners = list(visitedCorners)
+                if next_state in self.corners: #If the state is saved in the self.corners
+                    corner_state = next_state
+                    if corner_state not in successVisitedCorners: #If the corner/state is not visited successfully before
+                        successVisitedCorners.append(corner_state)
+                child = ((next_state, successVisitedCorners), action, 1)
+                successors.append(child)
 
         self._expanded += 1 # DO NOT CHANGE
         return successors
@@ -346,12 +372,16 @@ class CornersProblem(search.SearchProblem):
         Returns the cost of a particular sequence of actions.  If those actions
         include an illegal move, return 999999.  This is implemented for you.
         """
+
+
         if actions == None: return 999999
         x,y= self.startingPosition
+        cost = 0 #initialize cost
         for action in actions:
             dx, dy = Actions.directionToVector(action)
             x, y = int(x + dx), int(y + dy)
             if self.walls[x][y]: return 999999
+            cost += self.costFn(x, y) #add the cost of performing the actions
         return len(actions)
 
 
@@ -378,7 +408,23 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     # the one to use is the largest one, check performance (least nodes visited)
     #note that depending on how many corners visited, then we calculate heurisitic for remaining corners
 
-    return 0 # Default to trivial solution
+    node = state[0]
+    visitedCorners = state[1]
+    cornersToVisit = []
+    for corner in corners:
+        if corner not in visitedCorners:
+            cornersToVisit.append(corner)
+            
+    if len(cornersToVisit) == 0:
+        return 0
+    
+    manhatten = []
+    for n in cornersToVisit:
+        manhatten.append(util.manhattanDistance(n, node))
+        cornersToVisit.remove(n)
+    return min(manhatten)
+
+    #return 0 # Default to trivial solution
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
