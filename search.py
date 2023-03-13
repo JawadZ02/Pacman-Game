@@ -128,7 +128,8 @@ def breadthFirstSearch(problem: SearchProblem):
             # return list of actions
         
         for nextState, action, stepCost in problem.getSuccessors(state):
-            if nextState not in explored:
+            stateInFrontier = (nextState in (states[0] for states in frontier.list))
+            if nextState not in explored and not stateInFrontier:
                 nextActions = actions + [action]
                 frontier.push([nextState, nextActions])
         
