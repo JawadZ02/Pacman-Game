@@ -404,36 +404,49 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-
+    node = state[0]
+    visitedCorners = state[1]
     #heuristic should be max of 3 manhattan distances to corners, or sum of distances
     #or can use mazeDistance() function
     # the one to use is the largest one, check performance (least nodes visited)
     #note that depending on how many corners visited, then we calculate heurisitic for remaining corners
 
-    corners = problem.corners # These are the corner coordinates
-    walls = problem.walls # These are the walls of the maze, as a Grid (game.py)
-    
-    node = state[0]
-    visitedCorners = state[1]
-    cornersToVisit = []
+    justVisitedCorners = ()
+    #cornersToVisit = []
+    manhatten = []
+
     for corner in corners:
         if corner not in visitedCorners:
-            cornersToVisit.append(corner)
+            manhatten.append(util.manhattanDistance(corner, node))
+            #return min(manhatten)
+            #cornersToVisit.append(corner)
             
-    if not cornersToVisit:
+    if problem.isGoalState(state):
         return 0
+    else:
+        return min(manhatten)
     
-    """ manhatten = []
+    """   manhatten = []
     for n in cornersToVisit:
         manhatten.append(util.manhattanDistance(n, node))
-        cornersToVisit.remove(n)
     return min(manhatten) """
 
-    mazeDistance = []
+
+    """    
+    if len(cornersToVisit)==0:
+        return 0
+    else:
+        manhatten = []
+        for n in cornersToVisit:
+            manhatten.append(util.manhattanDistance(n, node))
+            #cornersToVisit.remove(n)
+        return 1
+    """
+    """ mazeDistance = []
     for n in cornersToVisit:
         mazeDistance.append(mazeDistance(n, node, state))
-        cornersToVisit.remove(n)
-    return min(mazeDistance)
+        #cornersToVisit.remove(n)
+    return max(mazeDistance) """
 
     #return 0 # Default to trivial solution
 
