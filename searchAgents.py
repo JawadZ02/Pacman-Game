@@ -301,10 +301,10 @@ class CornersProblem(search.SearchProblem):
         space)
         """
         "*** YOUR CODE HERE ***"
-        allCorners = [0, 0, 0, 0]
+        allCorners = (0, 0, 0)
         start = (self.startingPosition, allCorners)
         return start
-        util.raiseNotDefined()
+        #util.raiseNotDefined()
         #return (self.startingPosition, [0,0,0]) # none of the corners visited
         # for corners problem, any state specifies the current location AND how many corners visited
         # therefore, first item in triplet returned by getSuccessors is both location and corners visited
@@ -319,7 +319,7 @@ class CornersProblem(search.SearchProblem):
         corners = state[1]
         goalState = all(corners)
         return goalState
-        util.raiseNotDefined()
+        #util.raiseNotDefined()
 
         #return (self.startingPosition, [1,1,1])
 
@@ -352,21 +352,19 @@ class CornersProblem(search.SearchProblem):
             nextx = int(x + dx)
             nexty = int(y + dy)
             hitsWall = self.walls[nextx][nexty]
-            newCorners = []
+            newCorners = ()
             nextState = (nextx, nexty)
             if not hitsWall:
                 if nextState in self.corners:
                     if nextState == (self.right, 1):
-                        newCorners = [1, holdCorners[1], holdCorners[2], holdCorners[3]]
+                        newCorners = (1, holdCorners[1], holdCorners[2])
                     elif nextState == (self.right, self.top):
-                        newCorners = [holdCorners[0], 1, holdCorners[2], holdCorners[3]]
+                        newCorners = (holdCorners[0], 1, holdCorners[2])
                     elif nextState == (1, self.top):
-                        newCorners = [holdCorners[0], holdCorners[1], 1, holdCorners[3]]
-                    elif nextState == (1,1):
-                        newCorners = [holdCorners[0], holdCorners[1], holdCorners[2], 1]
+                        newCorners = (holdCorners[0], holdCorners[1], 1)
                     successor = ((nextState, newCorners), action,  1)
                 else:
-                    successor = (nextState, holdCorners, action, 1)
+                    successor = ((nextState, holdCorners), action, 1)
                 successors.append(successor)
 
         self._expanded += 1
@@ -425,11 +423,17 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     if not cornersToVisit:
         return 0
     
-    manhatten = []
+    """ manhatten = []
     for n in cornersToVisit:
         manhatten.append(util.manhattanDistance(n, node))
         cornersToVisit.remove(n)
-    return min(manhatten)
+    return min(manhatten) """
+
+    mazeDistance = []
+    for n in cornersToVisit:
+        mazeDistance.append(mazeDistance(n, node, state))
+        cornersToVisit.remove(n)
+    return min(mazeDistance)
 
     #return 0 # Default to trivial solution
 
