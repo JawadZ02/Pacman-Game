@@ -349,11 +349,11 @@ class CornersProblem(search.SearchProblem):
             nextState = (nextx, nexty)
             if not hitsWall: #if the next state is not a wall
                 if nextState in self.corners: #if the next state is one of the goal-corners
-                    if nextState == (self.right, 1): 
+                    if nextState == (self.right, 1): # if its the bottom right corner
                         newCorners = (1, holdCorners[1], holdCorners[2]) #mark corner as visited
-                    elif nextState == (self.right, self.top):
+                    elif nextState == (self.right, self.top): # if its the top right corner
                         newCorners = (holdCorners[0], 1, holdCorners[2]) #mark corner as visited
-                    elif nextState == (1, self.top):
+                    elif nextState == (1, self.top): # if its the top left corner
                         newCorners = (holdCorners[0], holdCorners[1], 1) #mark corner as visited
                     successor = ((nextState, newCorners), action,  1) #save the new state, the action to reach it and the cost of 1
                 else: #if next state is not one of the goal-corners
