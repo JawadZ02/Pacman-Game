@@ -162,6 +162,10 @@ def uniformCostSearch(problem: SearchProblem):
 
             stateInFrontier = (nextState in (states[2][0] for states in frontier.heap))
 
+            # Note: states[2][0] is a state's coordinates, and states[2][1] is the actions to reach it
+            # This is because items pushed into the priority queue are in the form:
+            # [priority, index, [state's coordinates, actions to reach state]]
+
             if nextState not in explored and not stateInFrontier:
                 nextActions = actions + [action]
                 nextCost = problem.getCostOfActions(nextActions)
@@ -248,6 +252,10 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
             # and accordingly we decide to keep one of them
             
             stateInFrontier = (nextState in (states[2][0] for states in frontier.heap))
+
+            # Note: states[2][0] is a state's coordinates, and states[2][1] is the actions to reach it
+            # This is because items pushed into the priority queue are in the form:
+            # [priority, index, [state's coordinates, actions to reach state]]
 
             if nextState not in explored and not stateInFrontier:
                 nextActions = actions + [action]
