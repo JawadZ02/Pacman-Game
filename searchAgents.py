@@ -411,42 +411,46 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
     # the one to use is the largest one, check performance (least nodes visited)
     #note that depending on how many corners visited, then we calculate heurisitic for remaining corners
 
-    justVisitedCorners = ()
+    #justVisitedCorners = ()
     #cornersToVisit = []
-    manhatten = []
+    """ manhatten = []
 
     for corner in corners:
         if corner not in visitedCorners:
-            manhatten.append(util.manhattanDistance(corner, node))
+            manhatten.append(util.manhattanDistance(node, corner))
             #return min(manhatten)
             #cornersToVisit.append(corner)
             
     if problem.isGoalState(state):
         return 0
     else:
-        return min(manhatten)
-    
-    """   manhatten = []
-    for n in cornersToVisit:
-        manhatten.append(util.manhattanDistance(n, node))
-    return min(manhatten) """
+        return max(manhatten) """
+    manhatten = []
+    stateCorners = state[1]
+    cornerNot = []
 
+    for corner in corners:
+        if corner == (1, problem.top):
+            if not stateCorners[2]:
+                cornerNot.append(corner)
+        if corner == (problem.right, problem.top):
+            if not stateCorners[1]:
+                cornerNot.append(corner)
+        if corner == (problem.right, 1):
+            if not stateCorners[0]:
+                cornerNot.append(corner)
+            #return min(manhatten)
+            #cornersToVisit.append(corner)
 
-    """    
-    if len(cornersToVisit)==0:
+    for corner in cornerNot:
+        manhatten.append(util.manhattanDistance(node, corner))
+            
+    if problem.isGoalState(state):
         return 0
     else:
-        manhatten = []
-        for n in cornersToVisit:
-            manhatten.append(util.manhattanDistance(n, node))
-            #cornersToVisit.remove(n)
-        return 1
-    """
-    """ mazeDistance = []
-    for n in cornersToVisit:
-        mazeDistance.append(mazeDistance(n, node, state))
-        #cornersToVisit.remove(n)
-    return max(mazeDistance) """
+        return max(manhatten)
+
+    
 
     #return 0 # Default to trivial solution
 
