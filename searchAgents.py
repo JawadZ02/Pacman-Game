@@ -304,10 +304,6 @@ class CornersProblem(search.SearchProblem):
         allCorners = (0, 0, 0)
         start = (self.startingPosition, allCorners)
         return start
-        #util.raiseNotDefined()
-        #return (self.startingPosition, [0,0,0]) # none of the corners visited
-        # for corners problem, any state specifies the current location AND how many corners visited
-        # therefore, first item in triplet returned by getSuccessors is both location and corners visited
 
         #util.raiseNotDefined()
 
@@ -319,9 +315,6 @@ class CornersProblem(search.SearchProblem):
         corners = state[1]
         goalState = all(corners)
         return goalState
-        #util.raiseNotDefined()
-
-        #return (self.startingPosition, [1,1,1])
 
         #util.raiseNotDefined()
 
@@ -405,52 +398,30 @@ def cornersHeuristic(state: Any, problem: CornersProblem):
 
     "*** YOUR CODE HERE ***"
     node = state[0]
-    visitedCorners = state[1]
-    #heuristic should be max of 3 manhattan distances to corners, or sum of distances
-    #or can use mazeDistance() function
-    # the one to use is the largest one, check performance (least nodes visited)
-    #note that depending on how many corners visited, then we calculate heurisitic for remaining corners
-
-    #justVisitedCorners = ()
-    #cornersToVisit = []
-    """ manhatten = []
-
-    for corner in corners:
-        if corner not in visitedCorners:
-            manhatten.append(util.manhattanDistance(node, corner))
-            #return min(manhatten)
-            #cornersToVisit.append(corner)
-            
-    if problem.isGoalState(state):
-        return 0
-    else:
-        return max(manhatten) """
-    manhatten = []
+    manhattan = []
     stateCorners = state[1]
-    cornerNot = []
+    cornersNotVisited = []
 
+    # adding the remaining unvisited corners to cornersNotVisited array
     for corner in corners:
         if corner == (1, problem.top):
             if not stateCorners[2]:
-                cornerNot.append(corner)
+                cornersNotVisited.append(corner)
         if corner == (problem.right, problem.top):
             if not stateCorners[1]:
-                cornerNot.append(corner)
+                cornersNotVisited.append(corner)
         if corner == (problem.right, 1):
             if not stateCorners[0]:
-                cornerNot.append(corner)
-            #return min(manhatten)
-            #cornersToVisit.append(corner)
+                cornersNotVisited.append(corner)
 
-    for corner in cornerNot:
-        manhatten.append(util.manhattanDistance(node, corner))
+    # finding manhattan distance from current node to every unvisited corner
+    for corner in cornersNotVisited:
+        manhattan.append(util.manhattanDistance(node, corner))
             
     if problem.isGoalState(state):
-        return 0
+        return 0 # heuristic is 0 for goal state
     else:
-        return max(manhatten)
-
-    
+        return max(manhattan) # returning the biggest manhattan distance from manhattan array
 
     #return 0 # Default to trivial solution
 
