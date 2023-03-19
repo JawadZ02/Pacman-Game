@@ -90,23 +90,23 @@ def depthFirstSearch(problem: SearchProblem):
 
     frontier = util.Stack()
     frontier.push([problem.getStartState(), []])
-    explored = set()
+    explored = []
     actions = []
     
     while frontier:
         state, actions = frontier.pop()
-        explored.add(state)
 
-        if problem.isGoalState(state):
-            return actions
-            # return list of actions
+        if state not in explored:
+            explored.append(state)
+
+            if problem.isGoalState(state):
+                return actions  # return list of actions        
         
-        for nextState, action, stepCost in problem.getSuccessors(state):
-            if nextState not in explored:
+            for nextState, action, stepCost in problem.getSuccessors(state):
                 nextActions = actions + [action]
                 frontier.push([nextState, nextActions])
         
-    return -1
+    return -1 # if no goal state found
     
     # util.raiseNotDefined()
 
@@ -116,24 +116,23 @@ def breadthFirstSearch(problem: SearchProblem):
 
     frontier = util.Queue()
     frontier.push([problem.getStartState(), []])
-    explored = set()
+    explored = []
     actions = []
     
     while frontier:
         state, actions = frontier.pop()
-        explored.add(state)
 
-        if problem.isGoalState(state):
-            return actions
-            # return list of actions
+        if state not in explored:
+            explored.append(state)
+
+            if problem.isGoalState(state):
+                return actions  # return list of actions        
         
-        for nextState, action, stepCost in problem.getSuccessors(state):
-            stateInFrontier = (nextState in (states[0] for states in frontier.list))
-            if nextState not in explored and not stateInFrontier:
+            for nextState, action, stepCost in problem.getSuccessors(state):
                 nextActions = actions + [action]
                 frontier.push([nextState, nextActions])
         
-    return -1
+    return -1 # if no goal state found
     
     # util.raiseNotDefined()
 
@@ -143,46 +142,24 @@ def uniformCostSearch(problem: SearchProblem):
     
     frontier = util.PriorityQueue()
     frontier.push([problem.getStartState(), []], 0)
-    explored = set()
+    explored = []
     actions = []
     
     while frontier:
         state, actions = frontier.pop()
-        explored.add(state)
 
-        if problem.isGoalState(state):
-            return actions
-            # return list of actions
+        if state not in explored:
+            explored.append(state)
+
+            if problem.isGoalState(state):
+                return actions  # return list of actions        
         
-        for nextState, action, stepCost in problem.getSuccessors(state):
-
-            # for each successor state, we must check if it is already in the frontier
-            # if it is, then we must compare the existing cost with the new cost
-            # and accordingly we decide to keep one of them
-
-            stateInFrontier = (nextState in (states[2][0] for states in frontier.heap))
-
-            # Note: states[2][0] is a state's coordinates, and states[2][1] is the actions to reach it
-            # This is because items pushed into the priority queue are in the form:
-            # [priority, index, [state's coordinates, actions to reach state]]
-
-            if nextState not in explored and not stateInFrontier:
+            for nextState, action, stepCost in problem.getSuccessors(state):
                 nextActions = actions + [action]
                 nextCost = problem.getCostOfActions(nextActions)
                 frontier.push([nextState, nextActions], nextCost)
-
-            elif nextState not in explored and stateInFrontier:
-                for states in frontier.heap:
-                    if states[2][0] == nextState:
-                        existingCost = problem.getCostOfActions(states[2][1])
-                
-                nextActions = actions + [action]
-                nextCost = problem.getCostOfActions(nextActions)
-
-                if nextCost < existingCost:
-                    frontier.update([nextState, nextActions], nextCost)
         
-    return -1
+    return -1 # if no goal state found
     
     # util.raiseNotDefined()
 
@@ -193,86 +170,30 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-from util import PriorityQueue
-class NewPriorityQueueWithFunction(PriorityQueue):
-    
-    # implemented a version of PriorityQueueWithFunction
-    # which pushes and updates with parameters problem, state (item), heuristic
-    # to match priorityFunction call with parameters problem, state (item), heuristic
-
-    def  __init__(self, priorityFunction):
-        "priorityFunction (item) -> priority"
-        self.priorityFunction = priorityFunction      # store the priority function
-        PriorityQueue.__init__(self)        # super-class initializer
-
-    def push(self, problem, item, heuristic):
-        "Adds an item to the queue with priority from the priority function"
-        PriorityQueue.push(self, item, self.priorityFunction(problem, item, heuristic))
-
-    def update(self, problem, item, heuristic, priority):
-        # If item already in priority queue with higher priority, update its priority and rebuild the heap.
-        # If item already in priority queue with equal or lower priority, do nothing.
-        # If item not in priority queue, do the same thing as self.push.
-        for index, (p, c, i) in enumerate(self.heap):
-            if i == item:
-                if p <= priority:
-                    break
-                del self.heap[index]
-                self.heap.append((priority, c, item))
-                heapq.heapify(self.heap)
-                break
-        else:
-            self.push(problem, item, heuristic)
-
-def priorityFunction(problem, state, heuristic):
-    # priority function is f(n) = g(n) + h(n)
-    return problem.getCostOfActions(state[1]) + heuristic(state[0], problem)
-
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     "*** YOUR CODE HERE ***"
     
-    frontier = NewPriorityQueueWithFunction(priorityFunction)
-    frontier.push(problem, [problem.getStartState(), []], heuristic)
-    explored = set()
+    frontier = util.PriorityQueue()
+    frontier.push([problem.getStartState(), []], 0)
+    explored = []
     actions = []
     
     while frontier:
         state, actions = frontier.pop()
-        explored.add(state)
 
-        if problem.isGoalState(state):
-            return actions
-            # return list of actions
+        if state not in explored:
+            explored.append(state)
+
+            if problem.isGoalState(state):
+                return actions  # return list of actions        
         
-        for nextState, action, stepCost in problem.getSuccessors(state):
-            
-            # for each successor state, we must check if it is already in the frontier
-            # if it is, then we must compare the existing cost with the new cost
-            # and accordingly we decide to keep one of them
-            
-            stateInFrontier = (nextState in (states[2][0] for states in frontier.heap))
-
-            # Note: states[2][0] is a state's coordinates, and states[2][1] is the actions to reach it
-            # This is because items pushed into the priority queue are in the form:
-            # [priority, index, [state's coordinates, actions to reach state]]
-
-            if nextState not in explored and not stateInFrontier:
+            for nextState, action, stepCost in problem.getSuccessors(state):
                 nextActions = actions + [action]
-                frontier.push(problem, [nextState, nextActions], heuristic)
-
-            elif nextState not in explored and stateInFrontier:
-                for states in frontier.heap:
-                    if states[2][0] == nextState:
-                        existingTotalCost = priorityFunction(problem, [states[2][0], states[2][1]], heuristic)
-                        
-                nextActions = actions + [action]
-                nextTotalCost = priorityFunction(problem, [nextState, nextActions], heuristic)
-
-                if nextTotalCost < existingTotalCost:
-                    frontier.update(problem, [nextState, nextActions], heuristic, nextTotalCost)
+                nextTotalCost = problem.getCostOfActions(nextActions) + heuristic(nextState, problem)
+                frontier.push([nextState, nextActions], nextTotalCost)
         
-    return -1
+    return -1 # if no goal state found
     
     # util.raiseNotDefined()
 

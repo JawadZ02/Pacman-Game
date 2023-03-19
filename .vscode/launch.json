@@ -12,7 +12,7 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
-            "args": ["-q", "q6"]
+            "args": ["-q", "q3"]
         }
     ]
 }
